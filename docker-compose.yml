@@ -1,25 +1,19 @@
 version: '3.8'
 services:
   mongodb:
-    image: mongo:6.0
+    image: mongo
     container_name: mongodb
     ports:
       - "27017:27017"
-    environment:
-      #get from config server
-      MONGO_INIT_DB_ROOT_USERNAME: admin
-      MONGO_INIT_DB_ROOT_PASSWORD: password
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_data:/data/user_data
+    networks:
+      - shared-net
 
-  springboot-app:
-    build:
-      context: .
-    container_name: springboot-app
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mongodb
+
+networks:
+  shared-net:
+    driver: bridge
 
 volumes:
   mongodb_data:
