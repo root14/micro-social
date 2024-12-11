@@ -15,7 +15,8 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
+
+    @PostMapping("/updateProfile")
     public ResponseEntity<Object> register(@RequestBody RegisterDto registerDto) throws UserException {
         return userService.register(registerDto);
     }
