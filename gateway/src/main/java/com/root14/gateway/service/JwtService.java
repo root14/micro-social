@@ -1,6 +1,6 @@
 package com.root14.gateway.service;
 
-import com.root14.gateway.model.AuthenticationRequest;
+import com.root14.gateway.model.LoginRequest;
 import com.root14.gateway.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,10 +21,10 @@ public class JwtService {
     }
 
 
-    public String generateToken(AuthenticationRequest authenticationRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+    public String generateToken(LoginRequest loginRequest) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        final var userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        final var userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
         return jwtUtil.generateToken(userDetails);
     }
 

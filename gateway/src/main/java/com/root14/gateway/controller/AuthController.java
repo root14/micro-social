@@ -1,7 +1,8 @@
 package com.root14.gateway.controller;
 
+import com.root14.gateway.model.RegisterRequest;
 import com.root14.gateway.entity.User;
-import com.root14.gateway.model.AuthenticationRequest;
+import com.root14.gateway.model.LoginRequest;
 import com.root14.gateway.service.JwtService;
 import com.root14.gateway.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,25 +21,38 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody AuthenticationRequest authenticationRequest) {
-        final String jwt = jwtService.generateToken(authenticationRequest);
+    public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest) {
+        final String jwt = jwtService.generateToken(loginRequest);
         return ResponseEntity.ok(jwt);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody AuthenticationRequest authenticationRequest) {
-        User user = userService.findByUsername(authenticationRequest.getUsername());
+    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+        User user = userService.findByUsername(registerRequest.getUsername());
+
+
         if (user != null) {
-            return ResponseEntity.badRequest().body("Username already exists");
+            if (user.getEmail().equals(registerRequest.getEmail())) {
+                return ResponseEntity.status(472).body("Email already exists");
+            }
+            if (user.getUsername().equals(registerRequest.getUsername())) {
+                return ResponseEntity.status(471).body("Username already exists");
+            }
+
         }
         user = User.builder()
-                .username(authenticationRequest.getUsername())
-                .password(authenticationRequest.getPassword())
-                .email("emil@gmail.com")
+                .username(registerRequest.getUsername())
+                .password(registerRequest.getPassword())
+                .email(registerRequest.getEmail())
                 .enabled(true)
                 .build();
 
-        userService.save(user);
+        try {
+            userService.save(user);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Something went wrong." + e.getMessage());
+        }
+
         return ResponseEntity.ok("User registered successfully");
     }
 

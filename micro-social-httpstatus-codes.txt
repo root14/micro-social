@@ -1,0 +1,3 @@
+Username already exists 471
+Email already exists 472
+BadCredentials 473
