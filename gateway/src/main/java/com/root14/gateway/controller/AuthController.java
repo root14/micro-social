@@ -1,5 +1,6 @@
 package com.root14.gateway.controller;
 
+import com.root14.gateway.model.LoginResponse;
 import com.root14.gateway.model.RegisterRequest;
 import com.root14.gateway.entity.User;
 import com.root14.gateway.model.LoginRequest;
@@ -22,8 +23,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest) {
-        final String jwt = jwtService.generateToken(loginRequest);
-        return ResponseEntity.ok(jwt);
+        final LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setToken(jwtService.generateToken(loginRequest));
+        return ResponseEntity.status(200).body(loginResponse);
     }
 
     @PostMapping("/register")
