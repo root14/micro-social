@@ -18,6 +18,10 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/user/**
+        - id: post-service
+          uri: lb://post-service
+          predicates:
+            - Path=/post/**
 
       discovery:
         locator:

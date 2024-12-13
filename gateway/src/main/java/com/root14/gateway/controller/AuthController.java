@@ -32,7 +32,6 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
         User user = userService.findByUsername(registerRequest.getUsername());
 
-
         if (user != null) {
             if (user.getEmail().equals(registerRequest.getEmail())) {
                 return ResponseEntity.status(472).body("Email already exists");
@@ -40,7 +39,6 @@ public class AuthController {
             if (user.getUsername().equals(registerRequest.getUsername())) {
                 return ResponseEntity.status(471).body("Username already exists");
             }
-
         }
         user = User.builder()
                 .username(registerRequest.getUsername())
