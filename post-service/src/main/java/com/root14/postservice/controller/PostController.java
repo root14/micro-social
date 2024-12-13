@@ -15,11 +15,8 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/addPost")
-    public ResponseEntity<?> addPost(@RequestBody AddPostDto addPostDto) {
-        //get author id from jwt
-        //add author-id as a header on gateway-server
-        postService.addPost(addPostDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> addPost(@RequestHeader("authenticated-user-id") String authenticatedUserId, @RequestBody AddPostDto addPostDto) {
+        return postService.addPost(addPostDto, authenticatedUserId);
     }
 
     @GetMapping("/getPost")
