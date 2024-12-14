@@ -10,14 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface PostRepository extends ElasticsearchRepository<Post, String> {
-    Optional<Post> findPostByAuthorIdAndEnabled(String authorId, Boolean enabled);
-
     Optional<List<Post>> findByAuthorIdAndEnabled(String authorId, Boolean enabled);
 
     Optional<Post> findByIdAndEnabled(String title, Boolean enabled);
 
-    List<Post> getPostsByEnabled(Boolean enabled);
-
-    Post getPostByEnabled(Boolean enabled);
     //todo add full text search by tags or #####
 }

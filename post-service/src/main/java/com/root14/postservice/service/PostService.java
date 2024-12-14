@@ -25,25 +25,26 @@ public class PostService {
         }
     }
 
-    public ResponseEntity<?> deleteByPostId(String id, boolean softDelete) {
+    public ResponseEntity<?> deleteByPostId(String id, boolean softDelete, String authenticatedUserId) {
         try {
-            if (softDelete) {
-                Optional<Post> post = postRepository.findById(id);
-                if (post.isPresent()) {
+            Optional<Post> post = postRepository.findById(id);
+            if (post.isPresent()) {
+                //check, if user delete its own post with header authenticated user-id
+                if (!post.get().getAuthorId().equals(authenticatedUserId)) {
+                    return ResponseEntity.status(403).build();
+                } else {
+                    if (!softDelete) {
+                        postRepository.deleteById(id);
+                        return ResponseEntity.ok().build();
+                    }
                     post.get().setEnabled(false);
                     postRepository.save(post.get());
                     return ResponseEntity.ok().build();
-                } else {
-                    return ResponseEntity.notFound().build();
                 }
             } else {
-                try {
-                    postRepository.deleteById(id);
-                    return ResponseEntity.ok().build();
-                } catch (Exception e) {
-                    return ResponseEntity.notFound().build();
-                }
+                return ResponseEntity.notFound().build();
             }
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Something went wrong." + e.getMessage());
         }
@@ -79,10 +80,13 @@ public class PostService {
         }
     }
 
-    public ResponseEntity<?> updatePostByPostId(String postId, String content) {
+    public ResponseEntity<?> updatePostByPostId(String postId, String content, String authenticatedUserId) {
         try {
             Optional<Post> post = postRepository.findByIdAndEnabled(postId, true);
             if (post.isPresent()) {
+                if (!post.get().getAuthorId().equals(authenticatedUserId)) {
+                    return ResponseEntity.status(403).build();
+                }
                 post.get().setContent(content);
                 postRepository.save(post.get());
                 return ResponseEntity.ok().build();

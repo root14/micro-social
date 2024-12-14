@@ -1,7 +1,6 @@
 package com.root14.postservice.controller;
 
 import com.root14.postservice.dto.AddPostDto;
-import com.root14.postservice.dto.GetPostDto;
 import com.root14.postservice.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +24,8 @@ public class PostController {
 
     //GetPostDto works fine now, can be written new dto for in the future.
     @DeleteMapping(value = "/deletePost")
-    public ResponseEntity<?> deletePost(@RequestParam String authorId) {
-        return postService.deleteByPostId(authorId, true);
+    public ResponseEntity<?> deletePost(@RequestHeader("authenticated-user-id") String authenticatedUserId, @RequestParam String authorId) {
+        return postService.deleteByPostId(authorId, true, authenticatedUserId);
     }
 
     @GetMapping("/getPostsByAuthorId")
@@ -35,7 +34,7 @@ public class PostController {
     }
 
     @PutMapping("/updatePostByPostId")
-    public ResponseEntity<?> updatePostByPostId(@RequestParam String content, @RequestParam String postId) {
-        return postService.updatePostByPostId(postId, content);
+    public ResponseEntity<?> updatePostByPostId(@RequestHeader("authenticated-user-id") String authenticatedUserId, @RequestParam String content, @RequestParam String postId) {
+        return postService.updatePostByPostId(postId, content, authenticatedUserId);
     }
 }
