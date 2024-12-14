@@ -22,7 +22,6 @@ public class PostController {
         return postService.getPostByPostId(authorId);
     }
 
-    //GetPostDto works fine now, can be written new dto for in the future.
     @DeleteMapping(value = "/deletePost")
     public ResponseEntity<?> deletePost(@RequestHeader("authenticated-user-id") String authenticatedUserId, @RequestParam String authorId) {
         return postService.deleteByPostId(authorId, true, authenticatedUserId);
