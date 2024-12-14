@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,9 +50,9 @@ public class PostService {
     }
 
     //todo do not return object raw
-    public ResponseEntity<?> getPostByPostId(String id) {
+    public ResponseEntity<?> getPostByPostId(String postId) {
         try {
-            Optional<Post> post = postRepository.findById(id);
+            Optional<Post> post = postRepository.findByIdAndEnabled(postId, true);
 
             if (post.isPresent()) {
                 return ResponseEntity.ok().body(post.get());
@@ -66,11 +65,11 @@ public class PostService {
     }
 
     //todo do not return object raw
-    public ResponseEntity<?> getPostByAuthorId(String authorId) {
+    public ResponseEntity<?> getPostsByAuthorId(String authorId) {
         try {
-            Optional<List<Post>> optionalPostList = postRepository.findPostByAuthorId(authorId);
+            Optional<List<Post>> optionalPostList = postRepository.findByAuthorIdAndEnabled(authorId, true);
 
-            if (optionalPostList.isPresent()) {
+            if (optionalPostList.isPresent() && !optionalPostList.get().isEmpty()) {
                 return ResponseEntity.ok().body(optionalPostList.get());
             } else {
                 return ResponseEntity.notFound().build();
@@ -82,7 +81,7 @@ public class PostService {
 
     public ResponseEntity<?> updatePostByPostId(String postId, String content) {
         try {
-            Optional<Post> post = postRepository.findById(postId);
+            Optional<Post> post = postRepository.findByIdAndEnabled(postId, true);
             if (post.isPresent()) {
                 post.get().setContent(content);
                 postRepository.save(post.get());
@@ -94,6 +93,4 @@ public class PostService {
             return ResponseEntity.badRequest().body("Something went wrong." + e.getMessage());
         }
     }
-
-
 }
