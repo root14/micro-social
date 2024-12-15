@@ -28,6 +28,7 @@ public class PostService {
                 Post p = post.get();
                 List<String> hashtags = analyzeService.extractHashtags(p.getContent());
                 p.setHashtags(hashtags);
+                p.setEnabled(true);
                 postRepository.save(p);
                 return true;
             }
