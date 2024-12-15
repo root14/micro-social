@@ -24,7 +24,7 @@ public class PostService {
             Post post = Post.builder().content(addPostDto.getContent()).authorId(authenticatedUserId).build();
             postRepository.save(post);
 
-            rabbitMQProducer.sendMessage("i`m alive!");
+            rabbitMQProducer.sendMessage(post.getId());
 
             return ResponseEntity.ok().build();
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package com.root14.postservice.entity;
+package com.root14.postvalidatorservice.entity;
 
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +19,5 @@ public class Post {
     private Integer favCount;
     private Boolean enabled;
     private List<String> hashtags;
+
 }
