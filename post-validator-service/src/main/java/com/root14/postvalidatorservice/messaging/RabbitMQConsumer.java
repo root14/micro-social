@@ -1,6 +1,6 @@
 package com.root14.postvalidatorservice.messaging;
 
-import com.root14.postvalidatorservice.service.PostService;
+import com.root14.postvalidatorservice.service.HashtagsService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class RabbitMQConsumer {
 
-    private final PostService postService;
+    private final HashtagsService postService;
 
     @Autowired
-    public RabbitMQConsumer(PostService postService) {
-        this.postService = postService;
+    public RabbitMQConsumer(HashtagsService hashtagsService) {
+        this.postService = hashtagsService;
     }
 
     /**
