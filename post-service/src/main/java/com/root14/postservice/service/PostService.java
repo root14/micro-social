@@ -5,8 +5,6 @@ import com.root14.postservice.entity.Post;
 import com.root14.postservice.messaging.RabbitMQProducer;
 import com.root14.postservice.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
