@@ -23,4 +23,12 @@ public class User {
     private String username;
     private Boolean enabled;
     private List<String> postIds;
+
+    private String fullName;
+    private String phone;
+    private String location;
+    private String link;
+    //todo
+    private String image;
+    private String bio;
 }
