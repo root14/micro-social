@@ -29,8 +29,8 @@ public class TextCategorizationService {
     private final PostRepository postRepository;
     private final ObjectMapper objectMapper;
 
-    @Value("${google.studio.ai.key}")
-    private String API_KEY;
+
+    private final String API_KEY=System.getenv("google_studio_key");
     @Value("${google.studio.ai.api_url}")
     private String API_URL;
 
