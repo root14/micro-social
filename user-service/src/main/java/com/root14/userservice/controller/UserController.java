@@ -40,5 +40,4 @@ public class UserController {
     public ResponseEntity<Object> delete(@RequestBody DeleteDto deleteDto) {
         return userService.delete(deleteDto);
     }
-
 }

@@ -36,7 +36,7 @@ public class PostService {
             if (post.isPresent()) {
                 //check, if user delete its own post with header authenticated user-id
                 if (!post.get().getAuthorId().equals(authenticatedUserId)) {
-                    return ResponseEntity.status(403).build();
+                    return ResponseEntity.badRequest().build();
                 } else {
                     if (!softDelete) {
                         postRepository.deleteById(id);

@@ -66,6 +66,4 @@ public class UserService {
         user.setBio(profileDto.getBio());
         return user;
     }
-
-
 }

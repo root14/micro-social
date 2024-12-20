@@ -18,6 +18,6 @@ public class Post {
     private Integer viewCount;
     private Integer favCount;
     private Boolean enabled;
-    private List<String> hashtags;
+    private String category;
 
 }

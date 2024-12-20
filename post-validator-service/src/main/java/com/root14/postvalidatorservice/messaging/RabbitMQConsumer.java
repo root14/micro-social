@@ -1,6 +1,7 @@
 package com.root14.postvalidatorservice.messaging;
 
-import com.root14.postvalidatorservice.service.HashtagsService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.root14.postvalidatorservice.service.TextCategorizationService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,12 +9,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class RabbitMQConsumer {
 
-    private final HashtagsService postService;
+    private final TextCategorizationService textCategorizationService;
 
     @Autowired
-    public RabbitMQConsumer(HashtagsService hashtagsService) {
-        this.postService = hashtagsService;
+    public RabbitMQConsumer(TextCategorizationService textCategorizationService) {
+        this.textCategorizationService = textCategorizationService;
     }
+
 
     /**
      * Analyzes and updates the post with the given postId.
@@ -28,8 +30,7 @@ public class RabbitMQConsumer {
      * @throws Exception if an error occurs while updating the post.
      */
     @RabbitListener(queues = "post-queue")
-    public void consumePost(String postId) {
-
-        postService.handlePost(postId);
+    public void consumePost(String postId) throws JsonProcessingException {
+        textCategorizationService.handlePostCategorization(postId);
     }
 }
