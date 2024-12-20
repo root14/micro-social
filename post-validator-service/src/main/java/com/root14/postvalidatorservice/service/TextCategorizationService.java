@@ -29,17 +29,16 @@ public class TextCategorizationService {
     private final PostRepository postRepository;
     private final ObjectMapper objectMapper;
 
-
-    private final String API_KEY=System.getenv("google_studio_key");
+    private final String API_KEY = System.getenv("google_studio_key");
     @Value("${google.studio.ai.api_url}")
     private String API_URL;
 
     /**
      * Constructor for TextCategorizationService.
      *
-     * @param restTemplate     the RestTemplate used for making HTTP requests to the AI service
-     * @param postRepository   the PostRepository used for fetching and saving post entities
-     * @param objectMapper     the ObjectMapper used for JSON parsing
+     * @param restTemplate   the RestTemplate used for making HTTP requests to the AI service
+     * @param postRepository the PostRepository used for fetching and saving post entities
+     * @param objectMapper   the ObjectMapper used for JSON parsing
      */
     @Autowired
     public TextCategorizationService(RestTemplate restTemplate, PostRepository postRepository, ObjectMapper objectMapper) {
