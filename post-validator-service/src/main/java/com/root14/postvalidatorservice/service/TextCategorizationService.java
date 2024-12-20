@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.root14.postvalidatorservice.entity.Post;
+import com.root14.postvalidatorservice.feign.UserFeignClient;
 import com.root14.postvalidatorservice.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,8 @@ public class TextCategorizationService {
     private final PostRepository postRepository;
     private final ObjectMapper objectMapper;
 
+    private final UserFeignClient userFeignClient;
+
     private final String API_KEY = System.getenv("google_studio_key");
     @Value("${google.studio.ai.api_url}")
     private String API_URL;
@@ -41,10 +44,11 @@ public class TextCategorizationService {
      * @param objectMapper   the ObjectMapper used for JSON parsing
      */
     @Autowired
-    public TextCategorizationService(RestTemplate restTemplate, PostRepository postRepository, ObjectMapper objectMapper) {
+    public TextCategorizationService(RestTemplate restTemplate, PostRepository postRepository, ObjectMapper objectMapper, UserFeignClient userFeignClient) {
         this.restTemplate = restTemplate;
         this.postRepository = postRepository;
         this.objectMapper = objectMapper;
+        this.userFeignClient = userFeignClient;
     }
 
     /**
@@ -52,9 +56,8 @@ public class TextCategorizationService {
      * and updating its category and enabled status in the database.
      *
      * @param postId the ID of the post to categorize
-     * @throws JsonProcessingException if an error occurs during JSON parsing
      */
-    public void handlePostCategorization(String postId) throws JsonProcessingException {
+    public void handlePostCategorization(String postId) {
         Optional<Post> post = postRepository.findById(postId);
 
         if (post.isPresent()) {
@@ -65,6 +68,15 @@ public class TextCategorizationService {
             postEntity.setCategory(resultCategory);
             postEntity.setEnabled(true);
             postRepository.save(postEntity);
+
+            //inform interest user-service
+            try {
+                String result = userFeignClient.updateInterest(postEntity.getAuthorId(), resultCategory);
+                System.out.println(result);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
         }
     }
 

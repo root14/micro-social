@@ -24,6 +24,8 @@ public class User {
     private Boolean enabled;
     private List<String> postIds;
 
+    private List<String> interests;
+
     private String fullName;
     private String phone;
     private String location;

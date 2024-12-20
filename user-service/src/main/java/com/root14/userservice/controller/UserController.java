@@ -18,6 +18,11 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("OK");
+    }
+
     @GetMapping("/getProfile")
     public ResponseEntity<Object> getProfileData(@RequestHeader("authenticated-user-id") @RequestParam String userName) {
         if (userName == null) {
@@ -34,6 +39,16 @@ public class UserController {
         }
 
         return ResponseEntity.ok(userService.updateProfile(profileDto, authenticatedUserId));
+    }
+
+    @PostMapping("/updateInterest")
+    public ResponseEntity<Object> updateInterests(@RequestHeader("authenticated-user-id") String authenticatedUserId, @RequestParam String interest) {
+
+        if (authenticatedUserId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(userService.updateInterest(authenticatedUserId, interest));
     }
 
     @DeleteMapping("/delete")
