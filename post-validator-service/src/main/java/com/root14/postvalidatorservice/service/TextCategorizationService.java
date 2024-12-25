@@ -69,14 +69,15 @@ public class TextCategorizationService {
             postEntity.setEnabled(true);
             postRepository.save(postEntity);
 
-            //inform interest user-service
             try {
+                //inform interest user-service
+                //make request to updateInterests
                 String result = userFeignClient.updateInterest(postEntity.getAuthorId(), resultCategory);
                 System.out.println(result);
             } catch (Exception e) {
+                //todo implement logger system
                 System.out.println(e);
             }
-
         }
     }
 

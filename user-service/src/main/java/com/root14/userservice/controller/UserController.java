@@ -4,8 +4,10 @@ import com.root14.userservice.dto.DeleteDto;
 import com.root14.userservice.dto.ProfileDto;
 import com.root14.userservice.entity.User;
 import com.root14.userservice.exception.UserException;
+import com.root14.userservice.service.InterestManager;
 import com.root14.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +15,16 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
-@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final InterestManager interestManager;
+
+    @Autowired
+    public UserController(UserService userService, InterestManager interestManager) {
+        this.userService = userService;
+        this.interestManager = interestManager;
+    }
 
     @GetMapping("/health")
     public ResponseEntity<String> health() {
@@ -48,7 +56,7 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(userService.updateInterest(authenticatedUserId, interest));
+        return ResponseEntity.ok(interestManager.addInterest(interest, authenticatedUserId));
     }
 
     @DeleteMapping("/delete")
