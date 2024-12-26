@@ -93,10 +93,6 @@ public class TextCategorizationService {
                 //add trend redis-cache
                 redisTemplate.opsForZSet().incrementScore("trends", resultCategory, 1);
 
-                /* for trend service
-                Set<String> topTrends = redisTemplate.opsForZSet().reverseRange("trends", 0, 4);
-                topTrends.stream().forEach(System.out::println);*/
-
             } catch (Exception e) {
                 //todo implement logger system
                 System.out.println(e);
