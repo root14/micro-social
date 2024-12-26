@@ -10,6 +10,14 @@ services:
     networks:
       - shared-net
 
+  redis:
+    image: redis:8.0-M02-alpine
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data/cache_data
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.16.1
     container_name: elasticsearch
@@ -47,3 +55,4 @@ networks:
 volumes:
   mongodb_data:
   elasticsearch_data:
+  redis_data:

@@ -9,6 +9,9 @@ import com.root14.postvalidatorservice.feign.UserFeignClient;
 import com.root14.postvalidatorservice.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,7 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service class responsible for categorizing posts using AI models.
@@ -32,6 +39,8 @@ public class TextCategorizationService {
 
     private final UserFeignClient userFeignClient;
 
+    private final RedisTemplate<String, String> redisTemplate;
+
     private final String API_KEY = System.getenv("google_studio_key");
     @Value("${google.studio.ai.api_url}")
     private String API_URL;
@@ -44,11 +53,12 @@ public class TextCategorizationService {
      * @param objectMapper   the ObjectMapper used for JSON parsing
      */
     @Autowired
-    public TextCategorizationService(RestTemplate restTemplate, PostRepository postRepository, ObjectMapper objectMapper, UserFeignClient userFeignClient) {
+    public TextCategorizationService(RestTemplate restTemplate, PostRepository postRepository, ObjectMapper objectMapper, UserFeignClient userFeignClient, RedisTemplate redisTemplate) {
         this.restTemplate = restTemplate;
         this.postRepository = postRepository;
         this.objectMapper = objectMapper;
         this.userFeignClient = userFeignClient;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -73,7 +83,20 @@ public class TextCategorizationService {
                 //inform interest user-service
                 //make request to updateInterests
                 String result = userFeignClient.updateInterest(postEntity.getAuthorId(), resultCategory);
+                //todo logger
                 System.out.println(result);
+
+                //inform redis about interest
+                if (resultCategory == null)
+                    throw new Exception("Post cannot analyzed.");
+
+                //add trend redis-cache
+                redisTemplate.opsForZSet().incrementScore("trends", resultCategory, 1);
+
+                /* for trend service
+                Set<String> topTrends = redisTemplate.opsForZSet().reverseRange("trends", 0, 4);
+                topTrends.stream().forEach(System.out::println);*/
+
             } catch (Exception e) {
                 //todo implement logger system
                 System.out.println(e);
