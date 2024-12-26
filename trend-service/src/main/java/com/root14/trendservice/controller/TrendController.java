@@ -19,7 +19,7 @@ public class TrendController {
         this.trendService = trendService;
     }
 
-    @GetMapping
+    @GetMapping("/getTrends")
     public ResponseEntity<?> getTrends(@RequestParam(defaultValue = "24h") String period) {
         return trendService.getTrend(period);
     }
