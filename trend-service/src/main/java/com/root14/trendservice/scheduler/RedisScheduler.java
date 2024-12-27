@@ -27,10 +27,8 @@ public class RedisScheduler {
     @Scheduled(cron = "0 0 0 * * *")
     public void archiveCache() {
         //todo store it to  somewhere
-        //todo clear cache
         //clear cache
-        //redisTemplate.opsForZSet().removeRange("trends", 0, -1);
-
+        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushDb();
     }
 
 }
