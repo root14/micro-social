@@ -48,6 +48,20 @@ services:
       timeout: 10s
       retries: 3
 
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - shared-net
+
 networks:
   shared-net:
     driver: bridge
@@ -56,3 +70,4 @@ volumes:
   mongodb_data:
   elasticsearch_data:
   redis_data:
+  minio_data:
