@@ -22,6 +22,10 @@ spring:
           uri: lb://post-service
           predicates:
             - Path=/post/**
+        - id: media-service
+          uri: lb://media-service
+          predicates:
+            - Path=/media/**
 
       discovery:
         locator:

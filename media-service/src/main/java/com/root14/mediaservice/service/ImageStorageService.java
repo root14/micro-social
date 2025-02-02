@@ -75,7 +75,6 @@ public class ImageStorageService {
      */
     public ResponseEntity<?> uploadImage(MultipartFile multipartFile) {
         try {
-
             List<String> supportedFormats = new ArrayList<>();
             supportedFormats.add(MediaType.IMAGE_JPEG_VALUE);
             supportedFormats.add(MediaType.IMAGE_PNG_VALUE);
