@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@RequestMapping("/media")
 public class ImageController {
 
     private final ImageStorageService storageService;
@@ -22,7 +23,7 @@ public class ImageController {
         return storageService.uploadImage(multipartFile);
     }
 
-    @GetMapping(value = {"/getImage", "/image"})
+    @GetMapping(value = {""})
     public ResponseEntity<?> getImage(@RequestParam String uuid) {
         return storageService.getImage(uuid);
     }
