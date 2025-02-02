@@ -1,26 +1,41 @@
 package com.root14.mediaservice.service;
 
 import io.minio.*;
-import io.minio.errors.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 @Service
 public class ImageStorageService {
 
-    @Autowired
-    private MinioClient minioClient;
 
-    public boolean checkIfExist(MultipartFile multipartFile) throws Exception {
+    private final MinioClient minioClient;
+
+    @Autowired
+    public ImageStorageService(MinioClient minioClient) {
+        this.minioClient = minioClient;
+
+
+        checkIfBucketExistNCreate();
+    }
+
+    private void checkIfBucketExistNCreate() {
+        //todo create bucket
+        try {
+            minioClient.makeBucket(MakeBucketArgs.builder().bucket("image").build());
+        } catch (Exception e) {
+            //already created or exception
+        }
+    }
+
+    private boolean checkIfExist(MultipartFile multipartFile) throws Exception {
         try {
             minioClient.statObject(StatObjectArgs.builder().bucket("image").object(multipartFile.getName()).build());
             return true;
@@ -44,15 +59,14 @@ public class ImageStorageService {
         }
     }
 
-    public ResponseEntity<?> deleteImage(String uuid) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public ResponseEntity<?> deleteImage(String uuid) {
         try {
             minioClient.removeObject(RemoveObjectArgs.builder().bucket("image").object(uuid).build());
 
             return ResponseEntity.ok().build();
-
         } catch (Exception exception) {
             //todo error handle
-            throw exception;
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -75,8 +89,9 @@ public class ImageStorageService {
             UUID uuid = UUID.randomUUID();
 
             minioClient.putObject(PutObjectArgs.builder().bucket("image").object(uuid.toString()).stream(multipartFile.getInputStream(), multipartFile.getSize(), -1).contentType(multipartFile.getContentType()).build());
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(uuid);
+            Map<String, String> response = new HashMap<>();
+            response.put("uuid", uuid.toString());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
