@@ -7,10 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ImageStorageService {
@@ -78,8 +75,13 @@ public class ImageStorageService {
      */
     public ResponseEntity<?> uploadImage(MultipartFile multipartFile) {
         try {
-            if (!Objects.equals(multipartFile.getContentType(), MediaType.IMAGE_JPEG_VALUE)) {
-                ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("only accept JPEG");
+
+            List<String> supportedFormats = new ArrayList<>();
+            supportedFormats.add(MediaType.IMAGE_JPEG_VALUE);
+            supportedFormats.add(MediaType.IMAGE_PNG_VALUE);
+
+            if (!supportedFormats.contains(multipartFile.getContentType())) {
+                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("only accept JPEG,JPG,PNG");
             }
 
             if (checkIfExist(multipartFile)) {
