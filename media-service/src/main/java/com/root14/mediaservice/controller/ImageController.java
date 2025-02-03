@@ -18,7 +18,7 @@ public class ImageController {
         this.storageService = storageService;
     }
 
-    @PutMapping(value = "/saveImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> saveImage(@RequestPart("file") MultipartFile multipartFile) {
         return storageService.uploadImage(multipartFile);
     }

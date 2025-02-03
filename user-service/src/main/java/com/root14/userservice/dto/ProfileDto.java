@@ -12,6 +12,7 @@ public class ProfileDto {
     private String fullName;
     private String location;
     private String link;
-    private String image;
+    //img at media-service
+    private String imageId;
     private String bio;
 }

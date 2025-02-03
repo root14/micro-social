@@ -30,7 +30,7 @@ public class User {
     private String phone;
     private String location;
     private String link;
-    //todo
-    private String image;
+
+    private String imageId;
     private String bio;
 }

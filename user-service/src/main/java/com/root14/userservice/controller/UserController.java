@@ -8,8 +8,10 @@ import com.root14.userservice.service.InterestManager;
 import com.root14.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -40,13 +42,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getProfileData(userName));
     }
 
-    @PatchMapping("/updateProfile")
-    public ResponseEntity<Object> register(@RequestHeader("authenticated-user-id") String authenticatedUserId, @RequestBody ProfileDto profileDto) throws UserException {
+    //patch mapping not working. probably default client not support patch mapping. (feign client)
+    @PostMapping(path = "/updateProfile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> updateProfile(@RequestHeader("authenticated-user-id") String authenticatedUserId, @RequestPart(value = "dto", required = false) ProfileDto profileDto, @RequestPart(value = "image", required = false) MultipartFile multipartFile) throws UserException {
         if (authenticatedUserId == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(userService.updateProfile(profileDto, authenticatedUserId));
+        return ResponseEntity.ok(userService.updateProfile(profileDto, authenticatedUserId, multipartFile));
     }
 
     @PostMapping("/updateInterest")
