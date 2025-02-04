@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @FeignClient(name = "media-service")
 public interface ImageFeignClient {
-
     @RequestMapping(method = RequestMethod.PUT, value = "/media/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     String uploadImage(@RequestPart("file") MultipartFile multipartFile);
 }

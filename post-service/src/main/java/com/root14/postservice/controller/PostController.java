@@ -3,8 +3,10 @@ package com.root14.postservice.controller;
 import com.root14.postservice.dto.AddPostDto;
 import com.root14.postservice.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/post")
@@ -12,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final PostService postService;
 
-    @PostMapping("/addPost")
-    public ResponseEntity<?> addPost(@RequestHeader("authenticated-user-id") String authenticatedUserId, @RequestBody AddPostDto addPostDto) {
-        return postService.addPost(addPostDto, authenticatedUserId);
+    @PostMapping(value = "/addPost", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> addPost(@RequestHeader("authenticated-user-id") String authenticatedUserId, @RequestPart(value = "dto", required = false) AddPostDto addPostDto, @RequestPart(value = "image", required = false) MultipartFile image) {
+        return postService.addPost(addPostDto, authenticatedUserId, image);
     }
 
     @GetMapping("/getPost")

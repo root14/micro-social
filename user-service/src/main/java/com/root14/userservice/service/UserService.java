@@ -81,7 +81,6 @@ public class UserService {
         //todo save to media service -> save imageId to mongodb
 
         String resultImageId = imageFeignClient.uploadImage(multipartFile);
-        //todo parse  resultImageId -> response {"uuid":"26689368-99d1-4f4e-b100-2ce552411f7b"}
 
         try {
             ImageDto imageDto = objectMapper.readValue(resultImageId, ImageDto.class);

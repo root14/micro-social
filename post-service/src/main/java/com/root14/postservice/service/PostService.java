@@ -1,27 +1,48 @@
 package com.root14.postservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.root14.postservice.dto.AddPostDto;
+import com.root14.postservice.dto.ImageDto;
 import com.root14.postservice.entity.Post;
+import com.root14.postservice.feign.ImageFeignClient;
 import com.root14.postservice.messaging.RabbitMQProducer;
 import com.root14.postservice.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final RabbitMQProducer rabbitMQProducer;
+    private final ImageFeignClient imageFeignClient;
+    private final ObjectMapper objectMapper;
 
-    public ResponseEntity<?> addPost(AddPostDto addPostDto, String authenticatedUserId) {
+    @Autowired
+    public PostService(PostRepository postRepository, RabbitMQProducer rabbitMQProducer, ImageFeignClient imageFeignClient, ObjectMapper objectMapper) {
+        this.postRepository = postRepository;
+        this.rabbitMQProducer = rabbitMQProducer;
+        this.imageFeignClient = imageFeignClient;
+        this.objectMapper = objectMapper;
+    }
+
+    public ResponseEntity<?> addPost(AddPostDto addPostDto, String authenticatedUserId, MultipartFile image) {
         try {
-            Post post = Post.builder().content(addPostDto.getContent()).authorId(authenticatedUserId).build();
-            postRepository.save(post);
+            //post default save disabled
+            String resultImageId = imageFeignClient.uploadImage(image);
+            ImageDto imageDto = objectMapper.readValue(resultImageId, ImageDto.class);
+            Post post = Post.builder().content(addPostDto
+                            .getContent())
+                    .authorId(authenticatedUserId)
+                    .imageId(imageDto.getUuid())
+                    .build();
 
+            postRepository.save(post);
             rabbitMQProducer.sendMessage(post.getId());
 
             return ResponseEntity.ok().build();
