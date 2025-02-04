@@ -19,5 +19,5 @@ public class Post {
     private Integer favCount;
     private Boolean enabled;
     private String category;
-
+    private String imageId;
 }
